@@ -12,8 +12,10 @@ void fillVector(elemento* vector, int size)
     {
         int a = rand();  // Returns a pseudo-random integer
 	    int b = rand();  // same as above
-	    float value = a * 100.0 + b;
-        elemento e = {i, value};
+        elemento e;
+        // Generate numbers from 1 to 100
+        e.chave = a * 10.0 + b;
+        e.valor = i;
 
         // inserir o elemento e na posição i
 	    vector[i] = e;
@@ -23,6 +25,16 @@ void fillVector(elemento* vector, int size)
 void freeVector(elemento* vector)
 {
     free(vector);
+}
+
+void printVector(elemento* vector, int size)
+{
+    printf("Vector: [ ");
+    for(int i = 0; i < size; i++)
+    {
+        printf("%.0f ", vector[i].chave);
+    }
+    printf("]\n");
 }
 
 // FIX ME!
@@ -101,17 +113,18 @@ int isMaxHeap(elemento heap[], int size) {
     return 1;
 }
 
-void decreaseMax(elemento heap[], int size, float new_value) {
+void decreaseMax(elemento heap[], int size, elemento new_elem) {
     if (size == 0) // Heap is empty
         return;
 
-    if (heap[0].chave > new_value) {
-        heap[0].chave = new_value;
+    if (heap[0].chave > new_elem.chave) {
+        heap[0].chave = new_elem.chave;
+        heap[0].valor = new_elem.valor;
         // The drawing function might need modifications if the structure changes affect the visualization.
-        #if SHOW_DECREASE_MAX_STEPS 
-           drawHeapTree(heap, size, 4);
-           printf("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        #endif
+        //#if SHOW_DECREASE_MAX_STEPS 
+           //drawHeapTree(heap, size, 4);
+           //printf("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        //#endif
         maxHeapify(heap, size, 0);
     }
 }

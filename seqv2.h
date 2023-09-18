@@ -16,14 +16,16 @@ typedef struct elemento
 }elemento;
 
 elemento* allocateVector(int size);
+void zeroVector(elemento* vector, int size);
 void fillVector(elemento* vector, int size);
 void freeVector(elemento* vector);
+void printVector(elemento* vector, int size);
 
 void drawHeapTree(elemento heap[], int size, int nLevels);
 void maxHeapify(elemento heap[], int size, int i);
 void heapifyUp(elemento heap[], int *size, int pos);
 void insert(elemento heap[], int *size, elemento element);
 int isMaxHeap(elemento heap[], int size);
-void decreaseMax(elemento heap[], int size, float new_value);
+void decreaseMax(elemento heap[], int size, elemento new_elem);
 
 #endif
