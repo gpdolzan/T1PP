@@ -3,8 +3,8 @@
 #include "input.h"
 
 float* Input;
-elemento* InputPair;
-elemento* Output;
+pair_t* InputPair;
+pair_t* Output;
 
 int main(int argc, char const *argv[])
 {
@@ -13,19 +13,19 @@ int main(int argc, char const *argv[])
     int k = getK();
 
     Input = (float*)malloc(nTotalElements * sizeof(float));
-    InputPair = (elemento*)malloc(nTotalElements * sizeof(elemento));
-    Output = (elemento*)malloc(k * sizeof(elemento));
+    InputPair = (pair_t*)malloc(nTotalElements * sizeof(pair_t));
+    Output = (pair_t*)malloc(k * sizeof(pair_t));
 
     for (int i = 0; i < nTotalElements; i++)
     {
         int a = rand();  // Returns a pseudo-random integer
 	    int b = rand();  // same as above
-        elemento e;
+        pair_t e;
         // Generate numbers from 1 to 100
-        e.chave = a * 100.0 + b;
-        e.valor = i;
+        e.key = a * 100.0 + b;
+        e.val = i;
 
-        Input[i] = e.chave;
+        Input[i] = e.key;
 	    InputPair[i] = e;
     }
     
