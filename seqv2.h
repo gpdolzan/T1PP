@@ -9,23 +9,25 @@
 #define MAX_HEAP_SIZE (1024*1024)
 #define parent(pos) ( (pos-1)/2 )
 
-typedef struct elemento
+typedef struct pair_t
 {
-    float chave;
-    int valor;
-}elemento;
+    float key;
+    int val;
+}pair_t;
 
-elemento* allocateVector(int size);
-void zeroVector(elemento* vector, int size);
-void fillVector(elemento* vector, int size);
-void freeVector(elemento* vector);
-void printVector(elemento* vector, int size);
+int pair_cmpfunc (const void * a, const void * b);
+int cmpfunc (const void * a, const void * b);
+void printVector(float* vector, int size);
+void printPairVector(pair_t* vector, int size);
+int binary_search(pair_t *array, int size, pair_t target);
+void verifyOutput(const float *Input, const pair_t *Output, int nTotalElmts, int k);
 
-void drawHeapTree(elemento heap[], int size, int nLevels);
-void maxHeapify(elemento heap[], int size, int i);
-void heapifyUp(elemento heap[], int *size, int pos);
-void insert(elemento heap[], int *size, elemento element);
-int isMaxHeap(elemento heap[], int size);
-void decreaseMax(elemento heap[], int size, elemento new_elem);
+
+void drawHeapTree(pair_t heap[], int size, int nLevels);
+void maxHeapify(pair_t heap[], int size, int i);
+void heapifyUp(pair_t heap[], int *size, int pos);
+void insert(pair_t heap[], int *size, pair_t element);
+int isMaxHeap(pair_t heap[], int size);
+void decreaseMax(pair_t heap[], int size, pair_t new_elem);
 
 #endif

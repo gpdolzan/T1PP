@@ -2,14 +2,9 @@
 #include "seqv2.h"
 #include "input.h"
 
-elemento* Input;
-elemento* Heap;
-
-int cmpfunc (const void * a, const void * b) {
-    elemento ea = *(const elemento*) a;
-    elemento eb = *(const elemento*) b;
-    return (ea.chave > eb.chave) - (ea.chave < eb.chave);
-}
+float* Input;
+elemento* InputPair;
+elemento* Output;
 
 int main(int argc, char const *argv[])
 {
@@ -17,32 +12,38 @@ int main(int argc, char const *argv[])
     int nTotalElements = getNTotalElements();
     int k = getK();
 
-    Input = allocateVector(nTotalElements);
-    fillVector(Input, nTotalElements);
-    printVector(Input, nTotalElements);
+    Input = (float*)malloc(nTotalElements * sizeof(float));
+    InputPair = (elemento*)malloc(nTotalElements * sizeof(elemento));
+    Output = (elemento*)malloc(k * sizeof(elemento));
 
-    Heap = allocateVector(k);
+    for (int i = 0; i < nTotalElements; i++)
+    {
+        int a = rand();  // Returns a pseudo-random integer
+	    int b = rand();  // same as above
+        elemento e;
+        // Generate numbers from 1 to 100
+        e.chave = a * 100.0 + b;
+        e.valor = i;
+
+        Input[i] = e.chave;
+	    InputPair[i] = e;
+    }
     
     for(int i = 0; i < k; i++)
     {
-        Heap[i] = Input[i];
+        Output[i] = InputPair[i];
     }
 
     for(int i = 0; i < nTotalElements; i++)
     {
-        decreaseMax(Heap, k, Input[i]);
+        decreaseMax(Output, k, InputPair[i]);
     }
 
-    qsort(Input, nTotalElements, sizeof(elemento), cmpfunc);
-    qsort(Heap, k, sizeof(elemento), cmpfunc);
+    verifyOutput(Input, Output, nTotalElements, k);
 
-    printVector(Input, nTotalElements);
-    printVector(Heap, k);
-
-    //drawHeapTree(Heap, k, 4);
-
-    freeVector(Input);
-    freeVector(Heap);
+    free(Input);
+    free(InputPair);
+    free(Output);
 
     return 0;
 }

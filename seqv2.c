@@ -1,44 +1,93 @@
 #include "seqv2.h"
 
-elemento* allocateVector(int size)
+int pair_cmpfunc (const void * a, const void * b)
 {
-    elemento* vector = (elemento*) malloc(size * sizeof(elemento));
-    return vector;
+    pair_t ea = *(const pair_t*) a;
+    pair_t eb = *(const pair_t*) b;
+    return (ea.key > eb.key) - (ea.key < eb.key);
 }
 
-void fillVector(elemento* vector, int size)
+int cmpfunc (const void * a, const void * b)
 {
-    for (int i = 0; i < size; i++)
-    {
-        int a = rand();  // Returns a pseudo-random integer
-	    int b = rand();  // same as above
-        elemento e;
-        // Generate numbers from 1 to 100
-        e.chave = a * 10.0 + b;
-        e.valor = i;
-
-        // inserir o elemento e na posição i
-	    vector[i] = e;
-    }
+    float ea = *(const float*) a;
+    float eb = *(const float*) b;
+    return (ea > eb) - (ea < eb);
 }
 
-void freeVector(elemento* vector)
-{
-    free(vector);
-}
-
-void printVector(elemento* vector, int size)
+void printVector(float* vector, int size)
 {
     printf("Vector: [ ");
     for(int i = 0; i < size; i++)
     {
-        printf("%.0f ", vector[i].chave);
+        printf("%.0f ", vector[i]);
     }
     printf("]\n");
 }
 
+void printPairVector(pair_t* vector, int size)
+{
+    printf("Vector: [ ");
+    for(int i = 0; i < size; i++)
+    {
+        printf("%.0f ", vector[i].key);
+    }
+    printf("]\n");
+}
+
+int binary_search(pair_t *array, int size, pair_t target)
+{
+    int low = 0;
+    int high = size - 1;
+    
+    while (low <= high) {
+        int mid = (low + high) / 2;
+        if (pair_cmpfunc(&target, &array[mid]) == 0) {
+            return mid;  // Target found
+        } else if (pair_cmpfunc(&target, &array[mid]) < 0) {
+            high = mid - 1;
+        } else {
+            low = mid + 1;
+        }
+    }
+    
+    return -1;  // Target not found
+}
+
+void verifyOutput(const float *Input, const pair_t *Output, int nTotalElmts, int k)
+{
+    int ok = 1;
+    
+    // 1) Create an array I of pairs (key, value)
+    pair_t *I = malloc(nTotalElmts * sizeof(pair_t));
+    for(int i = 0; i < nTotalElmts; i++) {
+        I[i].key = Input[i];
+        I[i].val = i;
+    }
+
+    // 2) Sort the array I in ascending order
+    qsort(I, nTotalElmts, sizeof(pair_t), pair_cmpfunc);
+
+    // 3) For each pair (ki,vi) belonging to the Output array
+    for (int i = 0; i < k; i++)
+    {
+        if (binary_search(I, nTotalElmts, Output[i]) == -1)
+        {
+            ok = 0;
+            break;
+        }
+    }
+
+    if (ok) {
+        printf("\nOutput set verified correctly.\n");
+    } else {
+        printf("\nOutput set DID NOT compute correctly!!!\n");
+    }
+
+    free(I);
+}
+
 // FIX ME!
-void drawHeapTree(elemento heap[], int size, int nLevels)
+void drawHeapTree(pair_t heap[], int size, int nLevels)
 {    
     int offset = 0;
     //int space = (int)pow(2, nLevels - 1);
@@ -46,7 +95,7 @@ void drawHeapTree(elemento heap[], int size, int nLevels)
     int nElements = 1;
     for (int level = 0; level < nLevels; level++) {
         for (int i = offset; i < size && i < (offset + nElements); i++) {
-            printf("[(%2.0f, %3d)]", heap[i].chave, heap[i].valor);
+            printf("[(%2.0f, %3d)]", heap[i].key, heap[i].val);
         }
         printf("\n");
         
@@ -56,22 +105,22 @@ void drawHeapTree(elemento heap[], int size, int nLevels)
     }
 }
 
-inline void swap(elemento *a, elemento *b) {
-    elemento temp = *a;
+inline void swap(pair_t *a, pair_t *b) {
+    pair_t temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void maxHeapify(elemento heap[], int size, int i) {
+void maxHeapify(pair_t heap[], int size, int i) {
     while (1) {
         int largest = i;
         int left = 2 * i + 1;
         int right = 2 * i + 2;
 
-        if (left < size && heap[left].chave > heap[largest].chave)
+        if (left < size && heap[left].key > heap[largest].key)
             largest = left;
 
-        if (right < size && heap[right].chave > heap[largest].chave)
+        if (right < size && heap[right].key > heap[largest].key)
             largest = right;
 
         if (largest != i) {
@@ -84,16 +133,16 @@ void maxHeapify(elemento heap[], int size, int i) {
     }
 }
 
-void heapifyUp(elemento heap[], int *size, int pos) {
-    elemento val = heap[pos];
-    while (pos > 0 && val.chave > heap[parent(pos)].chave) {
+void heapifyUp(pair_t heap[], int *size, int pos) {
+    pair_t val = heap[pos];
+    while (pos > 0 && val.key > heap[parent(pos)].key) {
         heap[pos] = heap[parent(pos)];
         pos = parent(pos);
     }
     heap[pos] = val;
 }
 
-void insert(elemento heap[], int *size, elemento element) {
+void insert(pair_t heap[], int *size, pair_t element) {
     *size += 1;
     int last = *size - 1;
     
@@ -101,25 +150,25 @@ void insert(elemento heap[], int *size, elemento element) {
     heapifyUp(heap, size, last);
 }
 
-int isMaxHeap(elemento heap[], int size) {
+int isMaxHeap(pair_t heap[], int size) {
     for (int i = 1; i < size; i++)
-        if (heap[i].chave <= heap[parent(i)].chave)
+        if (heap[i].key <= heap[parent(i)].key)
             continue;
         else {
-            printf("\nbroke at [%d]=%f\n", i, heap[i].chave);
-            printf("father at [%d]=%f\n", parent(i), heap[parent(i)].chave);
+            printf("\nbroke at [%d]=%f\n", i, heap[i].key);
+            printf("father at [%d]=%f\n", parent(i), heap[parent(i)].key);
             return 0;
         }
     return 1;
 }
 
-void decreaseMax(elemento heap[], int size, elemento new_elem) {
+void decreaseMax(pair_t heap[], int size, pair_t new_elem) {
     if (size == 0) // Heap is empty
         return;
 
-    if (heap[0].chave > new_elem.chave) {
-        heap[0].chave = new_elem.chave;
-        heap[0].valor = new_elem.valor;
+    if (heap[0].key > new_elem.key) {
+        heap[0].key = new_elem.key;
+        heap[0].val = new_elem.val;
         // The drawing function might need modifications if the structure changes affect the visualization.
         //#if SHOW_DECREASE_MAX_STEPS 
            //drawHeapTree(heap, size, 4);
