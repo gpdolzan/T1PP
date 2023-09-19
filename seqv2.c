@@ -39,13 +39,19 @@ int binary_search(pair_t *array, int size, pair_t target)
     int low = 0;
     int high = size - 1;
     
-    while (low <= high) {
+    while (low <= high)
+    {
         int mid = (low + high) / 2;
-        if (pair_cmpfunc(&target, &array[mid]) == 0) {
+        if (pair_cmpfunc(&target, &array[mid]) == 0)
+        {
             return mid;  // Target found
-        } else if (pair_cmpfunc(&target, &array[mid]) < 0) {
+        }
+        else if (pair_cmpfunc(&target, &array[mid]) < 0)
+        {
             high = mid - 1;
-        } else {
+        }
+        else
+        {
             low = mid + 1;
         }
     }
@@ -59,7 +65,8 @@ void verifyOutput(const float *Input, const pair_t *Output, int nTotalElmts, int
     
     // 1) Create an array I of pairs (key, value)
     pair_t *I = malloc(nTotalElmts * sizeof(pair_t));
-    for(int i = 0; i < nTotalElmts; i++) {
+    for(int i = 0; i < nTotalElmts; i++)
+    {
         I[i].key = Input[i];
         I[i].val = i;
     }
@@ -77,9 +84,11 @@ void verifyOutput(const float *Input, const pair_t *Output, int nTotalElmts, int
         }
     }
 
-    if (ok) {
+    if (ok)
+    {
         printf("\nOutput set verified correctly.\n");
-    } else {
+    } else
+    {
         printf("\nOutput set DID NOT compute correctly!!!\n");
     }
 
@@ -93,8 +102,10 @@ void drawHeapTree(pair_t heap[], int size, int nLevels)
     //int space = (int)pow(2, nLevels - 1);
     
     int nElements = 1;
-    for (int level = 0; level < nLevels; level++) {
-        for (int i = offset; i < size && i < (offset + nElements); i++) {
+    for (int level = 0; level < nLevels; level++)
+    {
+        for (int i = offset; i < size && i < (offset + nElements); i++)
+        {
             printf("[(%2.0f, %3d)]", heap[i].key, heap[i].val);
         }
         printf("\n");
@@ -105,44 +116,18 @@ void drawHeapTree(pair_t heap[], int size, int nLevels)
     }
 }
 
-inline void swap(pair_t *a, pair_t *b) {
-    pair_t temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-void maxHeapify(pair_t heap[], int size, int i) {
-    while (1) {
-        int largest = i;
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
-
-        if (left < size && heap[left].key > heap[largest].key)
-            largest = left;
-
-        if (right < size && heap[right].key > heap[largest].key)
-            largest = right;
-
-        if (largest != i) {
-            swap(&heap[i], &heap[largest]);
-            i = largest;
-            
-        } else {
-            break;
-        }
-    }
-}
-
 void heapifyUp(pair_t heap[], int *size, int pos) {
     pair_t val = heap[pos];
-    while (pos > 0 && val.key > heap[parent(pos)].key) {
+    while (pos > 0 && val.key > heap[parent(pos)].key)
+    {
         heap[pos] = heap[parent(pos)];
         pos = parent(pos);
     }
     heap[pos] = val;
 }
 
-void insert(pair_t heap[], int *size, pair_t element) {
+void insert(pair_t heap[], int *size, pair_t element)
+{
     *size += 1;
     int last = *size - 1;
     
@@ -154,7 +139,8 @@ int isMaxHeap(pair_t heap[], int size) {
     for (int i = 1; i < size; i++)
         if (heap[i].key <= heap[parent(i)].key)
             continue;
-        else {
+        else
+        {
             printf("\nbroke at [%d]=%f\n", i, heap[i].key);
             printf("father at [%d]=%f\n", parent(i), heap[parent(i)].key);
             return 0;
@@ -162,18 +148,48 @@ int isMaxHeap(pair_t heap[], int size) {
     return 1;
 }
 
-void decreaseMax(pair_t heap[], int size, pair_t new_elem) {
+inline void swap(pair_t *a, pair_t *b)
+{
+    pair_t temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void maxHeapify(pair_t heap[], int size, int i)
+{
+    while (1) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+
+        if (left < size && heap[left].key > heap[largest].key)
+            largest = left;
+
+        if (right < size && heap[right].key > heap[largest].key)
+            largest = right;
+
+        if (largest != i)
+        {
+            swap(&heap[i], &heap[largest]);
+            i = largest;
+            
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+void decreaseMax(pair_t heap[], int size, pair_t new_elem) 
+{
     if (size == 0) // Heap is empty
         return;
 
-    if (heap[0].key > new_elem.key) {
+    if (heap[0].key > new_elem.key)
+    {
         heap[0].key = new_elem.key;
         heap[0].val = new_elem.val;
-        // The drawing function might need modifications if the structure changes affect the visualization.
-        //#if SHOW_DECREASE_MAX_STEPS 
-           //drawHeapTree(heap, size, 4);
-           //printf("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        //#endif
         maxHeapify(heap, size, 0);
     }
 }
