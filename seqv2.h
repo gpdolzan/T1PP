@@ -29,6 +29,6 @@ void maxHeapify(pair_t heap[], int size, int i);
 void heapifyUp(pair_t heap[], int *size, int pos);
 void insert(pair_t heap[], int *size, pair_t element);
 int isMaxHeap(pair_t heap[], int size);
-void decreaseMax(pair_t heap[], int size, pair_t new_elem);
+void decreaseMax(pair_t heap[], int size, pair_t element);
 
 #endif
